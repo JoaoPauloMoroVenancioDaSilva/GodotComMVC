@@ -447,7 +447,11 @@ void FileAccessPack::set_big_endian(bool p_big_endian) {
 }
 
 Error FileAccessPack::get_error() const {
-	if (eof) {
+	if (encryption_error) {
+		return ERR_UNAUTHORIZED;
+	} else if (f.is_null()) {
+		return ERR_FILE_CANT_OPEN;
+	} else if (eof) {
 		return ERR_FILE_EOF;
 	}
 	return OK;
@@ -471,6 +475,7 @@ void FileAccessPack::close() {
 
 FileAccessPack::FileAccessPack(const String &p_path, const PackedData::PackedFile &p_file) {
 	pf = p_file;
+	eof = true;
 	if (pf.bundle) {
 		String simplified_path = p_path.simplify_path();
 		f = FileAccess::open(simplified_path, FileAccess::READ | FileAccess::SKIP_PACK);
@@ -495,6 +500,7 @@ FileAccessPack::FileAccessPack(const String &p_path, const PackedData::PackedFil
 		}
 
 		Error err = fae->open_and_parse(f, key, FileAccessEncrypted::MODE_READ, false);
+		encryption_error = err != OK;
 		ERR_FAIL_COND_MSG(err, vformat("Can't open encrypted pack-referenced file '%s'.", String(pf.pack)));
 		f = fae;
 		off = 0;

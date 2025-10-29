@@ -168,6 +168,7 @@ class FileAccessPack : public FileAccess {
 
 	mutable uint64_t pos;
 	mutable bool eof;
+	bool encryption_error = false;
 	uint64_t off;
 
 	Ref<FileAccess> f;
