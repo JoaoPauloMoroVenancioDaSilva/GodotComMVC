@@ -611,8 +611,8 @@ void ThemeModern::populate_standard_styles(const Ref<EditorTheme> &p_theme, Edit
 			p_theme->set_constant("scrollbar_margin_top", "Tree", 0);
 			p_theme->set_constant("scrollbar_margin_right", "Tree", 0);
 			p_theme->set_constant("scrollbar_margin_bottom", "Tree", 0);
-			p_theme->set_constant("scrollbar_h_separation", "Tree", 1 * EDSCALE);
-			p_theme->set_constant("scrollbar_v_separation", "Tree", 1 * EDSCALE);
+			p_theme->set_constant("scrollbar_h_separation", "Tree", p_config.base_margin * EDSCALE);
+			p_theme->set_constant("scrollbar_v_separation", "Tree", p_config.base_margin * EDSCALE);
 
 			Color relationship_line_color = p_config.mono_color * Color(1, 1, 1, p_config.relationship_line_opacity);
 			Color highlight_line_color = p_config.mono_color * Color(1, 1, 1, p_config.relationship_line_opacity * 2);
@@ -1028,16 +1028,12 @@ void ThemeModern::populate_standard_styles(const Ref<EditorTheme> &p_theme, Edit
 		Ref<Texture2D> empty_icon = memnew(ImageTexture);
 
 		Ref<StyleBoxFlat> grabber_style = p_config.base_style->duplicate();
-		grabber_style->set_bg_color(_get_base_color(p_config, 0.5, 0.6));
-		grabber_style->set_border_color(p_config.base_color * Color(1, 1, 1, 0));
-		grabber_style->set_border_width_all(3 * EDSCALE);
+		grabber_style->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.225));
 
 		Ref<StyleBoxFlat> grabber_hl_style = p_config.base_style->duplicate();
-		grabber_hl_style->set_bg_color(_get_base_color(p_config, 1.4, 0.5));
-		grabber_hl_style->set_border_color(_get_base_color(p_config) * Color(1, 1, 1, 0));
-		grabber_hl_style->set_border_width_all(2.5 * EDSCALE);
+		grabber_hl_style->set_bg_color(p_config.mono_color * Color(1, 1, 1, 0.5));
 
-		int scroll_margin = (p_config.enable_touch_optimizations ? 12 : 6) * EDSCALE;
+		int scroll_margin = (p_config.enable_touch_optimizations ? 9 : 3) * EDSCALE;
 
 		// HScrollBar.
 
@@ -1542,6 +1538,8 @@ void ThemeModern::populate_editor_styles(const Ref<EditorTheme> &p_theme, Editor
 
 		p_theme->set_stylebox(SceneStringName(panel), "ScrollContainer", p_config.base_empty_style);
 		p_theme->set_stylebox("focus", "ScrollContainer", p_config.focus_style);
+		p_theme->set_constant("scrollbar_h_separation", "ScrollContainer", p_config.base_margin * EDSCALE);
+		p_theme->set_constant("scrollbar_v_separation", "ScrollContainer", p_config.base_margin * EDSCALE);
 
 		// This stylebox is used in 3d and 2d viewports (no borders).
 		Ref<StyleBoxFlat> style_content_panel_vp = p_config.content_panel_style->duplicate();

@@ -4469,15 +4469,16 @@ void CanvasItemEditor::_update_scrollbars() {
 	}
 
 	// Move and resize the scrollbars, avoiding overlap.
+	const real_t sb_margin = 4 * EDSCALE;
 	if (is_layout_rtl()) {
-		v_scroll->set_begin(Point2(0, (show_rulers) ? ruler_width_scaled : 0));
-		v_scroll->set_end(Point2(vmin.width, size.height - (h_scroll->is_visible() ? hmin.height : 0)));
+		v_scroll->set_begin(Point2(sb_margin, (show_rulers) ? ruler_width_scaled + sb_margin : sb_margin));
+		v_scroll->set_end(Point2(vmin.width + sb_margin, size.height - (h_scroll->is_visible() ? hmin.height : 0) - sb_margin));
 	} else {
-		v_scroll->set_begin(Point2(size.width - vmin.width, (show_rulers) ? ruler_width_scaled : 0));
-		v_scroll->set_end(Point2(size.width, size.height - (h_scroll->is_visible() ? hmin.height : 0)));
+		v_scroll->set_begin(Point2(size.width - vmin.width - sb_margin, (show_rulers) ? ruler_width_scaled + sb_margin : sb_margin));
+		v_scroll->set_end(Point2(size.width - sb_margin, size.height - (h_scroll->is_visible() ? hmin.height : 0) - sb_margin));
 	}
-	h_scroll->set_begin(Point2((show_rulers) ? ruler_width_scaled : 0, size.height - hmin.height));
-	h_scroll->set_end(Point2(size.width - (v_scroll->is_visible() ? vmin.width : 0), size.height));
+	h_scroll->set_begin(Point2((show_rulers) ? ruler_width_scaled + sb_margin : sb_margin, size.height - hmin.height - sb_margin));
+	h_scroll->set_end(Point2(size.width - (v_scroll->is_visible() ? vmin.width : 0) - sb_margin, size.height - sb_margin));
 
 	// Calculate scrollable area.
 	v_scroll->set_value(view_offset.y);
