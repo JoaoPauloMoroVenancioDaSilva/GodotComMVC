@@ -186,6 +186,7 @@ public:
 	Vector<String> get_script_templates(const String &p_extension, const String &p_custom_path = String());
 	String get_editor_layouts_config() const;
 	static float get_auto_display_scale();
+	String get_language() const;
 
 	void _add_shortcut_default(const String &p_name, const Ref<Shortcut> &p_shortcut);
 	void add_shortcut(const String &p_name, const Ref<Shortcut> &p_shortcut);
