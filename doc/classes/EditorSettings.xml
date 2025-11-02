@@ -1593,6 +1593,10 @@
 		<member name="text_editor/theme/highlighting/gdscript/annotation_color" type="Color" setter="" getter="">
 			The GDScript syntax highlighter text color for annotations (e.g. [code]@export[/code]).
 		</member>
+		<member name="text_editor/theme/highlighting/gdscript/bracket_pair_colors" type="PackedColorArray" setter="" getter="">
+			The list of colors to cycle through for colorizing bracket pairs.
+			Leave blank to disable.
+		</member>
 		<member name="text_editor/theme/highlighting/gdscript/function_definition_color" type="Color" setter="" getter="">
 			The GDScript syntax highlighter text color for function definitions (e.g. the [code]_ready[/code] in [code]func _ready():[/code]).
 		</member>
