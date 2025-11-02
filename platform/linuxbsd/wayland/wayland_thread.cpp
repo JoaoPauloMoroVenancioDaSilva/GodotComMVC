@@ -4436,8 +4436,8 @@ void WaylandThread::pointer_warp(const Point2i &p_to) {
 
 	WindowState *ws = window_get_state(ss->pointer_data.pointed_id);
 
-	int hint_x = 0;
-	int hint_y = 0;
+	int wl_pos_x = 0;
+	int wl_pos_y = 0;
 
 	if (ws) {
 		// NOTE: It looks like it's not really recommended to convert from
@@ -4445,12 +4445,12 @@ void WaylandThread::pointer_warp(const Point2i &p_to) {
 		// discussing about this. I'm not really sure about the maths behind this but,
 		// oh well, we're setting a cursor hint. ¯\_(ツ)_/¯
 		// See: https://oftc.irclog.whitequark.org/wayland/2023-08-23#1692756914-1692816818
-		hint_x = std::round(p_to.x / window_state_get_scale_factor(ws));
-		hint_y = std::round(p_to.y / window_state_get_scale_factor(ws));
+		wl_pos_x = std::round(p_to.x / window_state_get_scale_factor(ws));
+		wl_pos_y = std::round(p_to.y / window_state_get_scale_factor(ws));
 	}
 
 	if (ss) {
-		seat_state_warp_pointer(ss, hint_x, hint_y);
+		seat_state_warp_pointer(ss, wl_pos_x, wl_pos_y);
 	}
 }
 WaylandThread::PointerConstraint WaylandThread::pointer_get_constraint() const {
