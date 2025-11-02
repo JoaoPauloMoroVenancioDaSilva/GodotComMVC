@@ -37,6 +37,7 @@
 #include "editor/file_system/editor_paths.h"
 #include "editor/settings/editor_settings.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/resources/3d/sky_material.h"
 #include "scene/resources/atlas_texture.h"
 #include "scene/resources/bit_map.h"
 #include "scene/resources/font.h"
@@ -362,6 +363,7 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 	RS::get_singleton()->viewport_set_scenario(viewport, scenario);
 	RS::get_singleton()->viewport_set_size(viewport, 128, 128);
 	RS::get_singleton()->viewport_set_transparent_background(viewport, true);
+	RS::get_singleton()->viewport_set_msaa_3d(viewport, RS::VIEWPORT_MSAA_4X);
 	RS::get_singleton()->viewport_set_active(viewport, true);
 	viewport_texture = RS::get_singleton()->viewport_get_texture(viewport);
 
@@ -370,10 +372,20 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 	RS::get_singleton()->camera_set_transform(camera, Transform3D(Basis(), Vector3(0, 0, 3)));
 	RS::get_singleton()->camera_set_perspective(camera, 45, 0.1, 10);
 
+	sky = RS::get_singleton()->sky_create();
+	sky_material.instantiate();
+	RS::get_singleton()->sky_set_material(sky, sky_material->get_rid());
+
+	environment = RS::get_singleton()->environment_create();
+	RS::get_singleton()->environment_set_background(environment, RS::ENV_BG_SKY);
+	RS::get_singleton()->environment_set_sky(environment, sky);
+	RS::get_singleton()->camera_set_environment(camera, environment);
+
 	if (GLOBAL_GET("rendering/lights_and_shadows/use_physical_light_units")) {
 		camera_attributes = RS::get_singleton()->camera_attributes_create();
 		RS::get_singleton()->camera_attributes_set_exposure(camera_attributes, 1.0, 0.000032552); // Matches default CameraAttributesPhysical to work well with default DirectionalLight3Ds.
 		RS::get_singleton()->camera_set_camera_attributes(camera, camera_attributes);
+		RS::get_singleton()->environment_set_bg_energy(environment, 1.0f, 30000.0f);
 	}
 
 	light = RS::get_singleton()->directional_light_create();
@@ -391,7 +403,7 @@ EditorMaterialPreviewPlugin::EditorMaterialPreviewPlugin() {
 	sphere = RS::get_singleton()->mesh_create();
 	sphere_instance = RS::get_singleton()->instance_create2(sphere, scenario);
 
-	int lats = 32;
+	int lats = 16;
 	int lons = 32;
 	const double lat_step = Math::PI / lats;
 	const double lon_step = Math::TAU / lons;
@@ -482,6 +494,8 @@ EditorMaterialPreviewPlugin::~EditorMaterialPreviewPlugin() {
 	RS::get_singleton()->free_rid(camera);
 	RS::get_singleton()->free_rid(camera_attributes);
 	RS::get_singleton()->free_rid(scenario);
+	RS::get_singleton()->free_rid(sky);
+	RS::get_singleton()->free_rid(environment);
 }
 
 ///////////////////////////////////////////////////////////////////////////
